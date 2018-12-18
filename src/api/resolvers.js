@@ -5,7 +5,6 @@ module.exports = {
         async movies() {
             return await db('movies')
         },
-        // (TODO)
         async actors() {
             return await db('actors')
         },
@@ -19,13 +18,12 @@ module.exports = {
             const genero = await db('genres').where({id}).first()
             return genero
         },
-        // (TODO)
         async getActor(_, {id}) {
             const result = await db('actors').where({id}).first()
             
             return result
         },
-        async getMoviesByGender(_, {id}) {
+        async getMoviesByGenre(_, {id}) {
             const result = await db('genres').innerJoin('movies', 'genres.id', 'movies.genre_id').where('movies.genre_id', id)
             return result
         }
@@ -65,7 +63,7 @@ module.exports = {
 
             return await db('actors').where({id}).first()
         },
-        //(TODO)
+        
         async addCast(_, {movieId, cast}) {
             const newCast = cast.map(item => {
                 return {movie_id: movieId, actor_id: item}
@@ -76,16 +74,19 @@ module.exports = {
         }
     },
     Movie: {
-        async cast({id}) { 
-            
-            console.log("Id do filme: ",id);
-                               
+        async cast({id}) {                        
             const actorsIds = await db('movies_actors').where({movie_id: id})
             
             const idsOnly = actorsIds.map(actor =>actor.actor_id)
             
             const result = await db.from('actors').whereIn('id', idsOnly)        
             return result
+        },
+        async genre({id}) {
+            // TODO: MOVIES_GENRES CRIAR TABELA
+            const movie = await db('movies').where({id}).first()
+            
+            return await db('genres').where({id: movie.genre_id})
         }
     },
     Actor: {

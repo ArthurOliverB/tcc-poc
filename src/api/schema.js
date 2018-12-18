@@ -9,6 +9,7 @@ const typeDefs = `
         year: String
         rating: Int
         cast: [Actor]
+        genre: [Genre]
     }
 
     input MovieInput {
@@ -49,7 +50,7 @@ const typeDefs = `
         getMovie(id: ID!): Movie
         getGenre(id: ID!): Genre
         getActor(id: ID!): Actor
-        getMoviesByGender(id: ID!): [Movie]
+        getMoviesByGenre(id: ID!): [Movie]
     }
 
     type Mutation {
