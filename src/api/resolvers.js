@@ -68,7 +68,7 @@ module.exports = {
             const newCast = cast.map(item => {
                 return {movie_id: movieId, actor_id: item}
             })
-            const result  = await db.batchInsert('movies_actors',newCast)
+            await db.batchInsert('movies_actors',newCast)
             
             return await db('movies').where({id: movieId}).first()
         }
