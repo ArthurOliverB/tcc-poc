@@ -58,6 +58,7 @@ const typeDefs = `
         createGenre(input: GenreInput): Genre
         createActor(input: ActorInput): Actor
         addCast(movieId: ID!, cast: [ID]!): Movie
+        deleteMovie(id: ID!): String
     }
 `   
 

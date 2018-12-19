@@ -71,6 +71,11 @@ module.exports = {
             await db.batchInsert('movies_actors',newCast)
             
             return await db('movies').where({id: movieId}).first()
+        },
+        async deleteMovie(_, {id}) {
+            await db('movies').delete().where({id})
+            // const hasCast = await db('movies_actors').where({movie_id: id})
+            return "Filme deletado com sucesso!"
         }
     },
     Movie: {
