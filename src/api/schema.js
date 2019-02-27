@@ -67,6 +67,7 @@ const typeDefs = `
         getMovie(id: ID!): Movie
         getGenre(id: ID!): Genre
         getActor(id: ID!): Actor
+        getDirector(id: ID!): Director
         getMoviesByGenre(id: ID!): [Movie]
         getMoviesByDirector(id: ID!): [Movie]
     }

@@ -12,8 +12,8 @@ module.exports = {
             return await db('genres')
         },
         async directors() {
-            const directors = await db('actors')
-                                            .innerJoin('directors_movies', 'actors.id', 'directors_movies.director_id')
+            const directors = await db('directors_movies')
+                                .innerJoin('actors', 'directors_movies.director_id', 'actors.id')
             return directors
         },
         async getMovie(_, { id }) {
@@ -26,6 +26,12 @@ module.exports = {
         async getActor(_, {id}) {
             const result = await db('actors').where({id}).first()
             
+            return result
+        },
+        async getDirector(_, {id}) {
+            const result = await db('directors_movies')
+                                .innerJoin('actors', 'directors_movies.director_id', 'actors.id')
+                                .first()
             return result
         },
         async getMoviesByGenre(_, {id}) {
@@ -124,9 +130,12 @@ module.exports = {
         }
     }, 
     Director: {
-        async movies({id}) {        
-            const moviesIds = await db('directors_movies').where({movie_id: id})
-            const idsOnly = moviesIds.map(movie =>movie.movie_id)
+        async movies({id}) { 
+            console.log(id);
+            const directorsIds = await db('directors_movies').where({director_id: id})
+            console.log(directorsIds);
+            const idsOnly = directorsIds.map(movie => movie.movie_id)
+            
             
             return await db.from('movies').whereIn('id', idsOnly)
         }
