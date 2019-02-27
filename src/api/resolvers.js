@@ -11,6 +11,11 @@ module.exports = {
         async genres() {
             return await db('genres')
         },
+        async directors() {
+            const directors = await db('actors')
+                                            .innerJoin('directors_movies', 'actors.id', 'directors_movies.director_id')
+            return directors
+        },
         async getMovie(_, { id }) {
             return await db('movies').where({id}).first()
         },
@@ -26,6 +31,12 @@ module.exports = {
         async getMoviesByGenre(_, {id}) {
             const result = await db('genres').innerJoin('movies', 'genres.id', 'movies.genre_id').where('movies.genre_id', id)
             return result
+        },
+        async getMoviesByDirector(_, {id}) {
+            const moviesIds = await db('directors_movies').where({movie_id: id})
+            const idsOnly = moviesIds.map(movie =>movie.movie_id)
+            
+            return await db.from('movies').whereIn('id', idsOnly)
         }
 
     }, 
@@ -35,6 +46,7 @@ module.exports = {
                 name: input.name,
                 description: input.description,
                 year: input.year,
+                director_id: input.director_id,
                 rating: input.rating,
                 genre_id: input.genreId
             })
@@ -92,6 +104,14 @@ module.exports = {
             const movie = await db('movies').where({id}).first()
             
             return await db('genres').where({id: movie.genre_id})
+        }, 
+        async director({id}) {
+            
+            const directorsIds = await db('directors_movies').where({movie_id: id})
+            const idsOnly = directorsIds.map(director => director.director_id)
+            const result = await db.from('actors').whereIn('id', idsOnly)
+            
+            return result
         }
     },
     Actor: {
@@ -101,6 +121,14 @@ module.exports = {
             
             const result = await db.from('movies').whereIn('id', idsOnly)
             return result
+        }
+    }, 
+    Director: {
+        async movies({id}) {        
+            const moviesIds = await db('directors_movies').where({movie_id: id})
+            const idsOnly = moviesIds.map(movie =>movie.movie_id)
+            
+            return await db.from('movies').whereIn('id', idsOnly)
         }
     }
 }
