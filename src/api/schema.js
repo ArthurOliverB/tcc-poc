@@ -2,6 +2,11 @@ const resolvers = require('./resolvers')
 const { makeExecutableSchema } = require('graphql-tools')
 
 const typeDefs = `
+    type Character {
+        id: ID!
+        name: String!
+        movies: [Movie]
+    }
     type Movie {
         id: ID!
         name: String
@@ -50,6 +55,7 @@ const typeDefs = `
         name: String
         bio: String
         birthdate: String
+        character: [Character]
         movies: [Movie]
     }
     input ActorInput {
@@ -61,6 +67,7 @@ const typeDefs = `
 
     type Query {
         genres: [Genre]
+        characters: [Character]
         movies: [Movie]
         actors:  [Actor]
         directors: [Director]

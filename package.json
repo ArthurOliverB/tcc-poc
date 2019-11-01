@@ -2,9 +2,10 @@
   "name": "movies-graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -13,7 +14,8 @@
     "graphql": "0.13.2",
     "graphql-tools": "2.24.0",
     "knex": "^0.14.6",
-    "mysql": "2.15.0"
+    "mysql": "2.15.0",
+    "nodemon": "^1.19.4"
   },
   "keywords": [],
   "author": "",

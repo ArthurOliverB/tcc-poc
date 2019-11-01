@@ -2,6 +2,9 @@ const db = require('../config/database')
 
 module.exports = {
     Query: {
+        async characters() {
+            return await db('characters')
+        },
         async movies() {
             return await db('movies')
         },
@@ -98,11 +101,11 @@ module.exports = {
     },
     Movie: {
         async cast({id}) {                        
-            const actorsIds = await db('movies_actors').where({movie_id: id})
+            const castIds = await db('movies_actors').where({movie_id: id})
             
-            const idsOnly = actorsIds.map(actor =>actor.actor_id)
+            const idsOnly = castIds.map(actor => actor.id)
             
-            const result = await db.from('actors').whereIn('id', idsOnly)        
+            const allCast = await db.from('actors').whereIn('id', idsOnly)
             return result
         },
         async genre({id}) {
@@ -139,5 +142,18 @@ module.exports = {
             
             return await db.from('movies').whereIn('id', idsOnly)
         }
+    },
+    Character: {
+        // async actor(parent, payload, ctx) {
+        //     console.log(parent);
+        //     // console.log(ctx);
+
+            
+            
+        //     // const movieCharacterId = await db.from('movies_characters').where({id}).first()
+        //     // console.log();
+            
+        //     // return await db.from('actors').where({id: movieCharacterId.actor_id})
+        // }
     }
 }

@@ -4,7 +4,6 @@ exports.up = function(knex, Promise) {
         table.string('name', 80).notNullable()
         table.string('description', 300).notNullable()
         table.string('year', 4).notNullable()
-        table.integer('director_id')
         table.integer('rating').unsigned().notNullable()
         table.integer('genre_id').unsigned().notNullable()
         table.foreign('genre_id').references('genres.id')

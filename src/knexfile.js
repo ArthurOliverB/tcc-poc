@@ -3,7 +3,7 @@ module.exports = {
   
     client: 'mysql',
     connection: {
-      database: 'graphql',
+      database: 'tcc',
       user:     'root',
       password
     },

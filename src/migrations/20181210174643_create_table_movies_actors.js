@@ -7,6 +7,8 @@ exports.up = function(knex, Promise) {
         
         table.integer('actor_id').unsigned().notNullable()
         table.foreign('actor_id').references('actors.id').onDelete('CASCADE')
+
+        table.string('role').notNullable()
     })
 };
 
