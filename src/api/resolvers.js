@@ -2,14 +2,24 @@ const db = require('../config/database')
 
 module.exports = {
     Query: {
-        async characters() {
-            return await db('characters')
+        async characters(_, args) {
+            
+            const limit = args.first ? args.first : 100
+            const offset = args.offset ? args.offset : 0
+            return await db('characters').limit(limit).offset(offset)
         },
-        async movies() {
-            return await db('movies')
+        async movies(_, args) { 
+            
+            
+            const limit = args.first ? args.first : 100
+            const offset = args.offset ? args.offset : 0
+            return await db('movies').limit(limit).offset(offset)
         },
-        async actors() {
-            return await db('actors')
+        async actors(_, args) {
+            
+            const limit = args.first ? args.first : 100
+            const offset = args.offset ? args.offset : 0
+            return await db('actors').limit(limit).offset(offset)
         },
         async genres() {
             return await db('genres')
@@ -100,13 +110,20 @@ module.exports = {
         }
     },
     Movie: {
-        async cast({id}) {                        
-            const castIds = await db('movies_actors').where({movie_id: id})
-            
-            const idsOnly = castIds.map(actor => actor.id)
-            
-            const allCast = await db.from('actors').whereIn('id', idsOnly)
-            return result
+        async cast({id, actor_id}, {first}) {                        
+            const limit = first ? first : 3 
+            let result = await db.select('actors.id', 'actors.name', 'actors.bio', 'actors.birthdate', 'movies_actors.role')
+                .from('actors')
+                .innerJoin('movies_actors', 'actors.id', 'movies_actors.actor_id')
+                .where({'movies_actors.movie_id': id}).limit(limit).offset(0)
+            const response = result.map(actor => {
+                if(actor_id) {
+                    return ({...actor, movieId: id, actor_id})
+                } else {
+                    return ({...actor, movieId: id})
+                }
+            })    
+            return response
         },
         async genre({id}) {
             // TODO: MOVIES_GENRES CRIAR TABELA
@@ -124,19 +141,23 @@ module.exports = {
         }
     },
     Actor: {
-        async movies({id}) {        
+        async movies({id}, {first}) {        
             const moviesIds = await db('movies_actors').where({actor_id: id})
             const idsOnly = moviesIds.map(movie =>movie.movie_id)
             
-            const result = await db.from('movies').whereIn('id', idsOnly)
+            const limit = first ? first : 5            
+            const result = await db.from('movies').whereIn('id', idsOnly).limit(limit).offset(0)
+
+            return result
+        },
+        async roles({id, movieId}) {
+            let result = await db('movies_actors').where({actor_id: id})
             return result
         }
     }, 
     Director: {
         async movies({id}) { 
-            console.log(id);
             const directorsIds = await db('directors_movies').where({director_id: id})
-            console.log(directorsIds);
             const idsOnly = directorsIds.map(movie => movie.movie_id)
             
             
@@ -144,16 +165,9 @@ module.exports = {
         }
     },
     Character: {
-        // async actor(parent, payload, ctx) {
-        //     console.log(parent);
-        //     // console.log(ctx);
-
+        async movies({movie_id}) {
             
-            
-        //     // const movieCharacterId = await db.from('movies_characters').where({id}).first()
-        //     // console.log();
-            
-        //     // return await db.from('actors').where({id: movieCharacterId.actor_id})
-        // }
+            return await db('movies').where({id: movie_id})
+        }
     }
 }

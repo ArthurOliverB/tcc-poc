@@ -4,7 +4,7 @@ const { makeExecutableSchema } = require('graphql-tools')
 const typeDefs = `
     type Character {
         id: ID!
-        name: String!
+        role: String!
         movies: [Movie]
     }
     type Movie {
@@ -13,7 +13,7 @@ const typeDefs = `
         description: String
         year: String
         rating: Int
-        cast: [Actor]
+        cast(first: Int): [Actor]
         director: [Director]
         genre: [Genre]
     }
@@ -55,8 +55,8 @@ const typeDefs = `
         name: String
         bio: String
         birthdate: String
-        character: [Character]
-        movies: [Movie]
+        roles: [Character]
+        movies(first: Int): [Movie]
     }
     input ActorInput {
         name: String
@@ -66,10 +66,10 @@ const typeDefs = `
     }
 
     type Query {
-        genres: [Genre]
-        characters: [Character]
-        movies: [Movie]
-        actors:  [Actor]
+        genres(first: Int, offset: Int): [Genre]
+        characters(first: Int, offset: Int): [Character]
+        movies(first: Int, offset: Int): [Movie]
+        actors(first: Int, offset: Int): [Actor]
         directors: [Director]
         getMovie(id: ID!): Movie
         getGenre(id: ID!): Genre
